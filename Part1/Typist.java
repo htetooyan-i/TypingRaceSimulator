@@ -6,35 +6,47 @@
  * He left a sticky note: "the slide-back thing is optional probably".
  * It is not optional. Good luck.
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author HTET OO YAN
+ * @version 0.1
  */
-public class Typist
-{
+public class Typist {
     // Fields of class Typist
     // Hint: you will need six fields. Think carefully about their types.
     // One of them tracks how far along the passage the typist has reached.
     // Another tracks whether the typist is currently burnt out.
-    // A third tracks HOW MANY turns of burnout remain (not just whether they are burnt out).
+    // A third tracks HOW MANY turns of burnout remain (not just whether they are
+    // burnt out).
     // The remaining three should be fairly obvious.
 
-
-
+    private double accuracy; // the typist's accuracy rating, between 0.0 and 1.0
+    private char symbol; // a single Unicode character representing this typist (e.g. '①', '②', '③')
+    private String name; // the name of the typist
+    private int progress; // how far along the passage the typist has reached
+    private boolean isBurntOut; // whether the typist is currently burnt out
+    private int burnoutTurnsRemaining; // how many turns of burnout remain
+    private boolean justMistyped; // whether the typist just mistyped on the current turn
 
     // Constructor of class Typist
     /**
      * Constructor for objects of class Typist.
      * Creates a new typist with a given symbol, name, and accuracy rating.
      *
-     * @param typistSymbol  a single Unicode character representing this typist (e.g. '①', '②', '③')
-     * @param typistName    the name of the typist (e.g. "TURBOFINGERS")
+     * @param typistSymbol   a single Unicode character representing this typist
+     *                       (e.g. '①', '②', '③')
+     * @param typistName     the name of the typist (e.g. "TURBOFINGERS")
      * @param typistAccuracy the typist's accuracy rating, between 0.0 and 1.0
      */
-    public Typist(char typistSymbol, String typistName, double typistAccuracy)
-    {
+    public Typist(char typistSymbol, String typistName, double typistAccuracy) {
+        this.symbol = typistSymbol;
+        this.name = typistName;
+        this.progress = 0;
+        this.isBurntOut = false;
+        this.burnoutTurnsRemaining = 0;
+        this.justMistyped = false;
+
+        setAccuracy(typistAccuracy); // use the setter func to ensure acc is within bounds
 
     }
-
 
     // Methods of class Typist
 
@@ -44,8 +56,9 @@ public class Typist
      *
      * @param turns the number of turns the burnout will last
      */
-    public void burnOut(int turns)
-    {
+    public void burnOut(int turns) {
+        this.isBurntOut = true;
+        this.burnoutTurnsRemaining = turns;
 
     }
 
@@ -54,9 +67,14 @@ public class Typist
      * When the counter reaches zero, the typist recovers automatically.
      * Has no effect if the typist is not currently burnt out.
      */
-    public void recoverFromBurnout()
-    {
-
+    public void recoverFromBurnout() {
+        if (this.isBurntOut) {
+            this.burnoutTurnsRemaining -= 1;
+            if (this.burnoutTurnsRemaining <= 0) {
+                this.isBurntOut = false;
+                this.burnoutTurnsRemaining = 0;
+            }
+        }
     }
 
     /**
@@ -64,9 +82,8 @@ public class Typist
      *
      * @return accuracy as a double between 0.0 and 1.0
      */
-    public double getAccuracy()
-    {
-        return 0.0; // placeholder - replace with correct implementation
+    public double getAccuracy() {
+        return this.accuracy;
     }
 
     /**
@@ -76,9 +93,8 @@ public class Typist
      *
      * @return progress as a non-negative integer
      */
-    public int getProgress()
-    {
-        return 0; // placeholder - replace with correct implementation
+    public int getProgress() {
+        return this.progress;
     }
 
     /**
@@ -86,9 +102,8 @@ public class Typist
      *
      * @return the typist's name as a String
      */
-    public String getName()
-    {
-        return ""; // placeholder - replace with correct implementation
+    public String getName() {
+        return this.name;
     }
 
     /**
@@ -96,9 +111,8 @@ public class Typist
      *
      * @return the typist's symbol as a char
      */
-    public char getSymbol()
-    {
-        return ' '; // placeholder - replace with correct implementation
+    public char getSymbol() {
+        return this.symbol;
     }
 
     /**
@@ -107,18 +121,19 @@ public class Typist
      *
      * @return burnout turns remaining as a non-negative integer
      */
-    public int getBurnoutTurnsRemaining()
-    {
-        return 0; // placeholder - replace with correct implementation
+    public int getBurnoutTurnsRemaining() {
+        return this.burnoutTurnsRemaining;
     }
 
     /**
      * Resets the typist to their initial state, ready for a new race.
      * Progress returns to zero, burnout is cleared entirely.
      */
-    public void resetToStart()
-    {
-
+    public void resetToStart() {
+        this.progress = 0;
+        this.isBurntOut = false;
+        this.burnoutTurnsRemaining = 0;
+        this.justMistyped = false;
     }
 
     /**
@@ -126,18 +141,18 @@ public class Typist
      *
      * @return true if burnt out
      */
-    public boolean isBurntOut()
-    {
-        return false; // placeholder - replace with correct implementation
+    public boolean isBurntOut() {
+        return this.isBurntOut;
     }
 
     /**
      * Advances the typist forward by one character along the passage.
      * Should only be called when the typist is not burnt out.
      */
-    public void typeCharacter()
-    {
-
+    public void typeCharacter() {
+        if (!isBurntOut) { // this func only be called when the typist is not burnt out but checking just in case
+            progress++;
+        }
     }
 
     /**
@@ -146,9 +161,13 @@ public class Typist
      *
      * @param amount the number of characters to slide back (must be positive)
      */
-    public void slideBack(int amount)
-    {
-
+    public void slideBack(int amount) {
+        if (amount > 0) {
+            progress -= amount;
+            if (progress < 0) {
+                progress = 0;
+            }
+        }
     }
 
     /**
@@ -157,9 +176,14 @@ public class Typist
      *
      * @param newAccuracy the new accuracy rating
      */
-    public void setAccuracy(double newAccuracy)
-    {
-
+    public void setAccuracy(double newAccuracy) {
+        if (newAccuracy < 0.0) {
+            this.accuracy = 0.0;
+        } else if (newAccuracy > 1.0) {
+            this.accuracy = 1.0;
+        } else {
+            this.accuracy = newAccuracy;
+        }
     }
 
     /**
@@ -167,9 +191,28 @@ public class Typist
      *
      * @param newSymbol the new symbol character
      */
-    public void setSymbol(char newSymbol)
-    {
+    public void setSymbol(char newSymbol) {
+        this.symbol = newSymbol;
 
+    }
+
+    /**
+     * Sets whether the typist is mistyping on the current turn.
+     *
+     * @param newJustMistyped the new value for the justMistyped flag
+     */
+    public void setJustMistyped(boolean newJustMistyped) {
+        this.justMistyped = newJustMistyped;
+    }
+
+    /**
+     * Returns true if the typist just mistyped on the current turn, false
+     * otherwise.
+     * 
+     * @return true if the typist just mistyped
+     */
+    public boolean getJustMistyped() {
+        return this.justMistyped;
     }
 
 }
