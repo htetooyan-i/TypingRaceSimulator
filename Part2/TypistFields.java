@@ -1,6 +1,6 @@
 import javax.swing.*;
 
-class TypistFields {
+public class TypistFields {
     JTextField symbolField;
     JPanel colorPreview;
     JComboBox<String> styleCombo;

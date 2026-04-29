@@ -56,6 +56,24 @@ public class MainGUI {
         JButton startButton = new JButton("Start Race");
         startButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        startButton.addActionListener(e -> {
+            String validationError = validateConfig();
+            if (validationError != null) {
+                JOptionPane.showMessageDialog(null, validationError, "Configuration Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            RaceConfig cfg = getCurrentConfig();
+
+            // Show the race frame FIRST
+            java.util.ArrayList<JTextPane> panes = RaceFrame.showRaceFrame(cfg);
+
+            // Run the race on a background thread for live updates
+            new Thread(() -> {
+                TypingRace race = new TypingRace(cfg.passageText.length());
+                race.startRaceWithUpdates(cfg, panes);
+            }).start();
+        });
+
         panel.add(startButton);
 
         return panel;
