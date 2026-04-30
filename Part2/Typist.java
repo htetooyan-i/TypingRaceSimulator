@@ -2,15 +2,23 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 /**
- * Write a description of class Typist here.
- *
+ * Represents a typist participant in a typing race competition.
+ * 
+ * Each typist tracks their progress through a passage, accuracy rating, and burnout state.
+ * Typists can customize their performance through typing styles (e.g. Touch Typist, Hunt & Peck),
+ * Typists can also customize their performance through keyboard types (e.g. Mechanical, Touchscreen), and accessories (e.g. Wrist Support, Energy Drink).
+ * 
+ * A typist's progress can advance by typing characters correctly or slide backwards when mistypes occur.
+ * When accuracy is too low, the typist may enter a burnout state where they cannot type temporarily.
+ * Each typist is visually represented by a unique symbol and color during live race rendering.
+ * 
  * Starter code generously abandoned by Ty Posaurus, your predecessor,
  * who typed with two fingers and considered that "good enough".
  * He left a sticky note: "the slide-back thing is optional probably".
  * It is not optional. Good luck.
  *
  * @author HTET OO YAN
- * @version 0.1
+ * @version 0.2
  */
 public class Typist {
     // Fields of class Typist

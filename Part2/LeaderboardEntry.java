@@ -13,7 +13,7 @@ public class LeaderboardEntry {
     public int racesPlayed;
     public int burnouts;
     public double totalWPM;
-    public int coins; // cumulative earnings
+    public int coins;
     public int consecutiveWins;
     public int racesWithoutBurnout;
     public Set<String> titles = new HashSet<>();

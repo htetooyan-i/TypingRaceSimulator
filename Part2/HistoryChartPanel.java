@@ -81,10 +81,9 @@ public class HistoryChartPanel extends JPanel {
                 Typist t = cfg.typists.get(idx);
                 TypistHistory history = histories.get(idx);
                 java.util.List<RaceResult> results = history.getRaceHistory();
+                
                 Color lineColor = Color.BLACK;
-                if (!results.isEmpty() && results.get(results.size() - 1).getTypistColor() != null) {
-                    lineColor = results.get(results.size() - 1).getTypistColor();
-                } else if (t.getColor() != null) {
+                if (!results.isEmpty() && t.getColor() != null) {
                     lineColor = t.getColor();
                 }
 

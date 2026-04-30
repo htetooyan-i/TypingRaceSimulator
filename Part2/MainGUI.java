@@ -82,8 +82,7 @@ public class MainGUI {
         return panel;
     }
 
-    // Player configuration panel where users can enter typist details and select
-    // modifiers
+    // Player configuration panel where users can enter typist details and select modifiers
     //
     public static JPanel playerConfiguration() {
         JPanel panel = new JPanel();
@@ -207,8 +206,7 @@ public class MainGUI {
         return panel;
     }
 
-    // Panel for entering typist details - name, symbol, color, typing style,
-    // keyboard type
+    // Panel for entering typist details - name, symbol, color, typing style and keyboard type
     //
     public static JPanel typistEntry(int typistNumber) {
         JPanel panel = new JPanel();
@@ -358,8 +356,7 @@ public class MainGUI {
         return panel;
     }
 
-    // ensure name and symbol are filled for each typist, and passage is not empty
-    // if custom
+    // ensure name and symbol are filled for each typist, and passage is not empty if custom
     //
     public static String validateConfig() {
         int numberOfTypists = typistSpinner == null ? 0 : (int) typistSpinner.getValue();
@@ -445,8 +442,7 @@ public class MainGUI {
         return cfg;
     }
 
-    // show info table about typing styles, keyboard types, and accessories
-    // modifiers
+    // show info table about typing styles, keyboard types, and accessories modifiers
     //
     public static JPanel showModifierInfo() {
 
@@ -524,7 +520,8 @@ public class MainGUI {
         return label;
     }
 
-    // Prefill a typist UI row from centralized presets
+    // Prefill a typist UI row from presets
+    //
     private static void applyPresetToFields(int typistNumber, TypistFields tf) {
         Typist preset = TypistPresets.getForSeat(typistNumber);
         if (preset == null)
@@ -540,7 +537,8 @@ public class MainGUI {
         if (preset.getKeyboardTypeName() != null) {
             tf.keyboardCombo.setSelectedItem(preset.getKeyboardTypeName());
         }
-        // by default presets have no accessories; ensure UI reflects that
+
+        // by default presets have no accessories
         tf.wristSupportBox.setSelected(preset.hasAccessory("Wrist Support"));
         tf.energyDrinkBox.setSelected(preset.hasAccessory("Energy Drink"));
         tf.headphonesBox.setSelected(preset.hasAccessory("Noise-Cancelling Headphones"));

@@ -67,7 +67,7 @@ public class StatisticsManager {
         return best;
     }
 
-    // Clears all statistics (useful for testing)
+    // Clears all statistics
     //
     public static void clearAllStatistics() {
         typistHistories.clear();

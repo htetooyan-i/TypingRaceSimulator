@@ -24,6 +24,8 @@ public final class TypistPresets {
         return Collections.unmodifiableList(list);
     }
 
+    // Helper to build a typist with given attributes without accessories
+    //
     private static Typist build(String name, char symbol, double accuracy, Color color, String typingStyle,
             String keyboardType) {
         Typist t = new Typist();
@@ -33,7 +35,7 @@ public final class TypistPresets {
         t.setColor(color);
         t.setTypingStyle(typingStyle);
         t.setKeyboardType(keyboardType);
-        // No accessories by default
+        
         return t;
     }
 

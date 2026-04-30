@@ -2,6 +2,9 @@ import java.util.*;
 
 public class LeaderboardManager {
 
+    // Earnings and upgrades support
+    private static Map<String, Integer> upgradeCosts = new HashMap<>();
+
     private static Map<String, LeaderboardEntry> entries = new HashMap<>();
 
     public static synchronized void updateWithResult(RaceResult r) {
@@ -15,7 +18,7 @@ public class LeaderboardManager {
         }
         e.burnouts += r.getBurnoutCount();
 
-        // Points algorithm: base by position + WPM bonus - burnout penalty
+        // Points algorithm based by position + WPM bonus - burnout penalty
         int base = 0;
         if (r.getPosition() == 1)
             base = 3;
@@ -62,9 +65,8 @@ public class LeaderboardManager {
         entries.put(name, e);
     }
 
-    // Earnings and upgrades support
-    private static Map<String, Integer> upgradeCosts = new HashMap<>();
-
+    // Initialize upgrade costs if not already done
+    //
     private static void initializeUpgradeCosts() {
         if (upgradeCosts.isEmpty()) {
             upgradeCosts.put("Wrist Support", 50);
@@ -110,7 +112,7 @@ public class LeaderboardManager {
         return e == null ? new HashSet<>() : new HashSet<>(e.upgrades);
     }
 
-    // Internal helper: compute earnings for a single race result
+    // helper func to compute earnings for a single race result
     private static int computeEarnings(RaceResult r) {
         int basePrize = 0;
         if (r.getPosition() == 1) {
@@ -154,6 +156,7 @@ public class LeaderboardManager {
     }
 
     // Expose earnings when updating results
+    //
     public static synchronized void applyEarningsForResult(RaceResult r) {
         int earned = computeEarnings(r);
         LeaderboardEntry e = entries.getOrDefault(r.getTypistName(), new LeaderboardEntry(r.getTypistName()));
@@ -167,7 +170,8 @@ public class LeaderboardManager {
         return list;
     }
 
-    // Rank impact multiplier for starting accuracy. Champions face pressure.
+    // Rank impact multiplier for starting accuracy. Champions face pressure
+    //
     public static synchronized double getRankImpactFor(String name) {
         List<LeaderboardEntry> list = getSortedEntries();
         for (int i = 0; i < list.size(); i++) {
