@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import javax.swing.SwingUtilities;
 
 /**
  * Global statistics manager for the typing race simulator.
@@ -14,6 +15,17 @@ public class StatisticsManager {
             typistHistories.put(typistName, new TypistHistory(typistName));
         }
         typistHistories.get(typistName).addRaceResult(result);
+        // Inform leaderboard manager of new race result
+        LeaderboardManager.updateWithResult(result);
+
+        // Refresh any UI leaderboard on the EDT
+        try {
+            SwingUtilities.invokeLater(() -> {
+                LeaderboardPanel.refreshTable();
+            });
+        } catch (Exception e) {
+            // ignore if UI not present
+        }
     }
 
     // Gets the history for a specific typist

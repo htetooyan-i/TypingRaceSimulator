@@ -58,12 +58,38 @@ public class TypingRace {
         try {
             for (Typist t : cfg.typists) {
                 t.resetToStart();
+                accuraciesBeforeRace.put(t.getName(), t.getAccuracy());
+                // Rank impact
+                // Champions and typists with high rank face more pressure, which can reduce their accuracy slightly
+                try {
+                    double rankMult = LeaderboardManager.getRankImpactFor(t.getName());
+                    t.setAccuracy(t.getAccuracy() * rankMult);
+                } catch (Exception ex) {
+                    // ignore if leaderboard not initialized
+                }
+
+                // Apply purchased upgrades
+                try {
+                    java.util.Set<String> ups = LeaderboardManager.getUpgrades(t.getName());
+                    if (ups.contains("Wrist Support")) {
+                        if (!t.hasAccessory("Wrist Support"))
+                            t.addAccessory("Wrist Support");
+                    }
+                    if (ups.contains("Mechanical Keyboard")) {
+                        t.setKeyboardType("Mechanical");
+                    }
+                    if (ups.contains("Energy Drink")) {
+                        if (!t.hasAccessory("Energy Drink"))
+                            t.addAccessory("Energy Drink");
+                    }
+                } catch (Exception ex) {
+                    // ignore
+                }
                 // Initialize tracking for this race
                 long raceStartTime = System.currentTimeMillis();
                 raceStartTimes.put(t.getName(), raceStartTime);
                 t.setRaceStartTime(raceStartTime);
                 burnoutCounts.put(t.getName(), 0);
-                accuraciesBeforeRace.put(t.getName(), t.getAccuracy());
             }
         } catch (NullPointerException e) {
             System.out.println("All seats must be filled to start the race!");

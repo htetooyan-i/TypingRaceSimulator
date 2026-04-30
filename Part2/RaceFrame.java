@@ -8,8 +8,11 @@ import javax.swing.text.StyledDocument;
 public class RaceFrame {
     // Store status labels to update during race
     private static ArrayList<JLabel> statusLabels = new ArrayList<>();
+    private static HashMap<String, Integer> lastProgressByTypist = new HashMap<>();
 
     public static ArrayList<JTextPane> showRaceFrame(RaceConfig cfg) {
+        statusLabels.clear();
+        lastProgressByTypist.clear();
 
         JFrame raceFrame = new JFrame("Typing Race");
         raceFrame.setLayout(new BorderLayout());
@@ -64,6 +67,10 @@ public class RaceFrame {
             statusLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             statusLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
             statusLabels.add(statusLabel);
+
+            if (cfg.typists.size() > i) {
+                lastProgressByTypist.put(cfg.typists.get(i).getName(), 0);
+            }
 
             typistPanel.add(statusLabel);
 
@@ -164,15 +171,18 @@ public class RaceFrame {
         if (typistIndex < statusLabels.size()) {
             JLabel statusLabel = statusLabels.get(typistIndex);
             String status = "";
+            int currentProgress = typist.getProgress();
+            int previousProgress = lastProgressByTypist.getOrDefault(typist.getName(), currentProgress);
 
             if (typist.isBurntOut()) {
                 status = "BURNT OUT (" + typist.getBurnoutTurnsRemaining() + " turns remaining)";
                 statusLabel.setForeground(Color.RED);
-            } else if (typist.getJustMistyped()) {
+            } else if (typist.getJustMistyped() || currentProgress < previousProgress) {
                 status = "MISTYPED (sliding back)";
                 statusLabel.setForeground(Color.RED);
             }
             statusLabel.setText(status);
+            lastProgressByTypist.put(typist.getName(), currentProgress);
         }
     }
 

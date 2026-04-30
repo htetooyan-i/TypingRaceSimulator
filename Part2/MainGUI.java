@@ -22,12 +22,15 @@ public class MainGUI {
         frame.setLayout(new BorderLayout());
 
         JPanel content = raceConfiguration();
-
         JScrollPane scrollPane = new JScrollPane(content);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        frame.add(scrollPane, BorderLayout.CENTER);
+        JTabbedPane tabs = new JTabbedPane();
+        tabs.addTab("Race", scrollPane);
+        tabs.addTab("Leaderboard", new LeaderboardPanel());
+
+        frame.add(tabs, BorderLayout.CENTER);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1200, 1000);
@@ -79,7 +82,8 @@ public class MainGUI {
         return panel;
     }
 
-    // Player configuration panel where users can enter typist details and select modifiers
+    // Player configuration panel where users can enter typist details and select
+    // modifiers
     //
     public static JPanel playerConfiguration() {
         JPanel panel = new JPanel();
@@ -203,7 +207,8 @@ public class MainGUI {
         return panel;
     }
 
-    // Panel for entering typist details - name, symbol, color, typing style, keyboard type
+    // Panel for entering typist details - name, symbol, color, typing style,
+    // keyboard type
     //
     public static JPanel typistEntry(int typistNumber) {
         JPanel panel = new JPanel();
@@ -353,7 +358,8 @@ public class MainGUI {
         return panel;
     }
 
-    // ensure name and symbol are filled for each typist, and passage is not empty if custom
+    // ensure name and symbol are filled for each typist, and passage is not empty
+    // if custom
     //
     public static String validateConfig() {
         int numberOfTypists = typistSpinner == null ? 0 : (int) typistSpinner.getValue();
@@ -396,7 +402,8 @@ public class MainGUI {
 
             TypistFields tf = typistFieldsMap.get(i);
 
-            // Use centralized default typist for this seat so defaults are defined in TypistPresets
+            // Use centralized default typist for this seat so defaults are defined in
+            // TypistPresets
             Typist t = TypistPresets.getForSeat(i);
             if (tf != null) {
                 // Apply UI overrides on top of preset values
@@ -438,7 +445,8 @@ public class MainGUI {
         return cfg;
     }
 
-    // show info table about typing styles, keyboard types, and accessories modifiers
+    // show info table about typing styles, keyboard types, and accessories
+    // modifiers
     //
     public static JPanel showModifierInfo() {
 

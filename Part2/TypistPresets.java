@@ -14,12 +14,12 @@ public final class TypistPresets {
     private static List<Typist> createDefaults() {
         List<Typist> list = new ArrayList<>();
 
-        list.add(build("Turbo", '①', 0.5, Color.BLACK, "Touch Typist", "Mechanical"));
-        list.add(build("Steady", '②', 0.5, Color.BLACK, "Hunt & Peck", "Membrane"));
-        list.add(build("Flash", '③', 0.5, Color.BLACK, "Phone Thumbs", "Touchscreen"));
-        list.add(build("Echo", '④', 0.5, Color.BLACK, "Voice to Text", "Mechanical"));
-        list.add(build("Vector", '⑤', 0.5, Color.BLACK, "Touch Typist", "Stenography"));
-        list.add(build("Nova", '⑥', 0.5, Color.BLACK, "Hunt & Peck", "Membrane"));
+        list.add(build("Turbo", '①', 0.35, Color.BLACK, "Touch Typist", "Mechanical"));
+        list.add(build("Steady", '②', 0.35, Color.BLACK, "Hunt & Peck", "Membrane"));
+        list.add(build("Flash", '③', 0.35, Color.BLACK, "Phone Thumbs", "Touchscreen"));
+        list.add(build("Echo", '④', 0.35, Color.BLACK, "Voice to Text", "Mechanical"));
+        list.add(build("Vector", '⑤', 0.35, Color.BLACK, "Touch Typist", "Stenography"));
+        list.add(build("Nova", '⑥', 0.35, Color.BLACK, "Hunt & Peck", "Membrane"));
 
         return Collections.unmodifiableList(list);
     }
