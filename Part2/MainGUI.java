@@ -79,8 +79,8 @@ public class MainGUI {
         return panel;
     }
 
-    // Player configuration panel where users can enter typist details and select
-    // modifiers
+    // Player configuration panel where users can enter typist details and select modifiers
+    //
     public static JPanel playerConfiguration() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -126,6 +126,7 @@ public class MainGUI {
     }
 
     // Panel for selecting passage length and entering custom passage
+    //
     public static JPanel passageLengthConfiguration() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -202,8 +203,8 @@ public class MainGUI {
         return panel;
     }
 
-    // Panel for entering typist details - name, symbol, color, typing style,
-    // keyboard type
+    // Panel for entering typist details - name, symbol, color, typing style, keyboard type
+    //
     public static JPanel typistEntry(int typistNumber) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -297,6 +298,8 @@ public class MainGUI {
         tf.wristSupportBox = wristSupportBox;
         tf.energyDrinkBox = energyDrinkBox;
         tf.headphonesBox = headphonesBox;
+
+        applyPresetToFields(typistNumber, tf);
         typistFieldsMap.put(typistNumber, tf);
 
         return panel;
@@ -350,8 +353,7 @@ public class MainGUI {
         return panel;
     }
 
-    // ensure name and symbol are filled for each typist, and passage is not empty
-    // if custom
+    // ensure name and symbol are filled for each typist, and passage is not empty if custom
     //
     public static String validateConfig() {
         int numberOfTypists = typistSpinner == null ? 0 : (int) typistSpinner.getValue();
@@ -374,6 +376,7 @@ public class MainGUI {
     }
 
     // get current config from UI elements and return a RaceConfig object
+    //
     public static RaceConfig getCurrentConfig() {
         RaceConfig cfg = new RaceConfig();
 
@@ -390,15 +393,25 @@ public class MainGUI {
         cfg.numberOfTypists = typistSpinner == null ? 0 : (int) typistSpinner.getValue();
 
         for (int i = 1; i <= cfg.numberOfTypists; i++) {
+
             TypistFields tf = typistFieldsMap.get(i);
-            Typist t = new Typist();
+
+            // Use centralized default typist for this seat so defaults are defined in TypistPresets
+            Typist t = TypistPresets.getForSeat(i);
             if (tf != null) {
-                t.setName("Typist " + i); // Default name from player pool
-                t.setSymbol(tf.symbolField.getText().charAt(0));
+                // Apply UI overrides on top of preset values
+                String symbolText = tf.symbolField.getText().trim();
+                if (!symbolText.isEmpty()) {
+                    t.setSymbol(symbolText.charAt(0));
+                }
                 t.setColor(tf.colorPreview.getBackground());
                 t.setTypingStyle((String) tf.styleCombo.getSelectedItem());
                 t.setKeyboardType((String) tf.keyboardCombo.getSelectedItem());
 
+                // reset accessories to match UI
+                t.removeAccessory("Wrist Support");
+                t.removeAccessory("Energy Drink");
+                t.removeAccessory("Noise-Cancelling Headphones");
                 if (tf.wristSupportBox.isSelected()) {
                     t.addAccessory("Wrist Support");
                 }
@@ -425,8 +438,8 @@ public class MainGUI {
         return cfg;
     }
 
-    // show info table about typing styles, keyboard types, and accessories
-    // modifiers
+    // show info table about typing styles, keyboard types, and accessories modifiers
+    //
     public static JPanel showModifierInfo() {
 
         JPanel panel = new JPanel();
@@ -501,6 +514,28 @@ public class MainGUI {
         JLabel label = new JLabel(text);
         label.setFont(new Font("Arial", Font.PLAIN, 11));
         return label;
+    }
+
+    // Prefill a typist UI row from centralized presets
+    private static void applyPresetToFields(int typistNumber, TypistFields tf) {
+        Typist preset = TypistPresets.getForSeat(typistNumber);
+        if (preset == null)
+            return;
+        tf.symbolField.setText(String.valueOf(preset.getSymbol()));
+        Color c = preset.getColor();
+        if (c == null)
+            c = Color.BLACK;
+        tf.colorPreview.setBackground(c);
+        if (preset.getTypingStyleName() != null) {
+            tf.styleCombo.setSelectedItem(preset.getTypingStyleName());
+        }
+        if (preset.getKeyboardTypeName() != null) {
+            tf.keyboardCombo.setSelectedItem(preset.getKeyboardTypeName());
+        }
+        // by default presets have no accessories; ensure UI reflects that
+        tf.wristSupportBox.setSelected(preset.hasAccessory("Wrist Support"));
+        tf.energyDrinkBox.setSelected(preset.hasAccessory("Energy Drink"));
+        tf.headphonesBox.setSelected(preset.hasAccessory("Noise-Cancelling Headphones"));
     }
 
 }

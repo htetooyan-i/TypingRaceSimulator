@@ -43,7 +43,7 @@ public class RaceFrame {
             JPanel typistPanel = new JPanel();
             typistPanel.setLayout(new BoxLayout(typistPanel, BoxLayout.Y_AXIS));
 
-            JLabel typistLabel = new JLabel(symbol + " Typist " + (i + 1) + " - " + name);
+            JLabel typistLabel = new JLabel(symbol + " - " + name);
             typistLabel.setFont(new Font("Arial", Font.BOLD, 12));
             typistLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -154,9 +154,8 @@ public class RaceFrame {
         }
     }
 
-    /**
-     * Updates the typist display with current progress and status indicators
-     */
+    // Updates the typist display with current progress and status indicators
+    //
     public static void updateTypistDisplay(JTextPane pane, String text, Typist typist, int typistIndex) {
         // Update text pane with progress
         updateTextPane(pane, text, typist.getProgress());
@@ -175,6 +174,171 @@ public class RaceFrame {
             }
             statusLabel.setText(status);
         }
+    }
+
+    // Displays the winner dialog with Statistics button
+    //
+    public static void showWinnerDialog(Typist winner, String formattedFinalAcc, String formattedOldAcc,
+            RaceConfig cfg) {
+        // Create custom dialog with Statistics button
+        JDialog dialog = new JDialog();
+        dialog.setTitle("Race Results");
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setSize(400, 250);
+        dialog.setLocationRelativeTo(null);
+        dialog.setModal(true);
+
+        // Main panel with winner info
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JLabel titleLabel = new JLabel("RACE WINNER");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+
+        JLabel nameLabel = new JLabel("Name: " + winner.getName());
+        nameLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        nameLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+
+        JLabel accuracyLabel = new JLabel("Final Accuracy: " + formattedFinalAcc + "%");
+        accuracyLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        accuracyLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+
+        JLabel improvedLabel = new JLabel("(improved from " + formattedOldAcc + "%)");
+        improvedLabel.setFont(new Font("Arial", Font.ITALIC, 12));
+        improvedLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+
+        mainPanel.add(titleLabel);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(nameLabel);
+        mainPanel.add(Box.createVerticalStrut(5));
+        mainPanel.add(accuracyLabel);
+        mainPanel.add(Box.createVerticalStrut(5));
+        mainPanel.add(improvedLabel);
+        mainPanel.add(Box.createVerticalStrut(20));
+
+        // Button panel
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
+
+        JButton statsButton = new JButton("Statistics");
+        statsButton.addActionListener(e -> showPlayerStatistics(cfg));
+
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(e -> dialog.dispose());
+
+        buttonPanel.add(statsButton);
+        buttonPanel.add(closeButton);
+        mainPanel.add(buttonPanel);
+
+        dialog.add(mainPanel);
+        dialog.setVisible(true);
+    }
+
+    // Displays statistics for all players in a new frame
+    //
+    public static void showPlayerStatistics(RaceConfig cfg) {
+        JFrame statsFrame = new JFrame("Player Statistics");
+        statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        statsFrame.setSize(800, 600);
+        statsFrame.setLocationRelativeTo(null);
+
+        JTabbedPane tabbedPane = new JTabbedPane();
+
+        // Current Race Statistics
+        String[] currentColumnNames = { "Name", "Symbol", "Accuracy", "Progress", "WPM", "Turns", "Burnt Out",
+                "Burnout Count", "Style", "Keyboard", "Accessories" };
+        Object[][] currentData = new Object[cfg.typists.size()][currentColumnNames.length];
+
+        for (int i = 0; i < cfg.typists.size(); i++) {
+            Typist t = cfg.typists.get(i);
+            String progress = t.getProgress() + " / " + cfg.passageText.length();
+            String accessories = t.getAccessoryNames().isEmpty() ? "None" : String.join(", ", t.getAccessoryNames());
+
+            currentData[i][0] = t.getName();
+            currentData[i][1] = t.getSymbol();
+            currentData[i][2] = String.format("%.2f", t.getAccuracy() * 100) + "%";
+            currentData[i][3] = progress;
+            currentData[i][4] = String.format("%.2f", t.getCurrentRaceWPM());
+            currentData[i][5] = t.getTurnsTaken();
+            currentData[i][6] = t.isBurntOut() ? "Yes" : "No";
+            currentData[i][7] = t.getCurrentRaceBurnoutCount();
+            currentData[i][8] = t.getTypingStyleName();
+            currentData[i][9] = t.getKeyboardTypeName();
+            currentData[i][10] = accessories;
+        }
+
+        JTable currentTable = new JTable(currentData, currentColumnNames);
+        currentTable.setEnabled(false);
+        currentTable.getTableHeader().setReorderingAllowed(false);
+        currentTable.setRowHeight(25);
+        currentTable.setFont(new Font("Arial", Font.PLAIN, 11));
+        currentTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+
+        JScrollPane currentRaceScroll = new JScrollPane(currentTable);
+        tabbedPane.addTab("Current Race", currentRaceScroll);
+
+        // Personal bests
+        String[] bestColumnNames = { "Name", "Total Races", "Wins", "Best WPM", "Avg Accuracy", "Total Burnouts" };
+        Object[][] bestData = new Object[cfg.typists.size()][bestColumnNames.length];
+
+        for (int i = 0; i < cfg.typists.size(); i++) {
+            Typist t = cfg.typists.get(i);
+            TypistHistory history = StatisticsManager.getTypistHistory(t.getName());
+
+            bestData[i][0] = t.getName();
+            bestData[i][1] = history.getTotalRaces();
+            bestData[i][2] = history.getWinsCount();
+            bestData[i][3] = String.format("%.2f", history.getBestWPM());
+            bestData[i][4] = String.format("%.2f", history.getAverageAccuracy()) + "%";
+            bestData[i][5] = history.getTotalBurnouts();
+        }
+
+        JTable bestTable = new JTable(bestData, bestColumnNames);
+        bestTable.setEnabled(false);
+        bestTable.getTableHeader().setReorderingAllowed(false);
+        bestTable.setRowHeight(25);
+        bestTable.setFont(new Font("Arial", Font.PLAIN, 11));
+        bestTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+
+        JScrollPane bestScroll = new JScrollPane(bestTable);
+        tabbedPane.addTab("Personal Bests", bestScroll);
+
+        // History as chart
+        tabbedPane.addTab("History", new JScrollPane(new HistoryChartPanel(cfg)));
+
+        // Comparison View (Table Format)
+        String[] comparisonColumnNames = { "Name", "Best WPM", "Total Races", "Wins", "Win Rate", "Avg Accuracy" };
+        Object[][] comparisonData = new Object[cfg.typists.size()][comparisonColumnNames.length];
+
+        for (int i = 0; i < cfg.typists.size(); i++) {
+            Typist t = cfg.typists.get(i);
+            TypistHistory history = StatisticsManager.getTypistHistory(t.getName());
+            double winRate = history.getTotalRaces() > 0
+                    ? (double) history.getWinsCount() / history.getTotalRaces() * 100
+                    : 0;
+
+            comparisonData[i][0] = t.getName();
+            comparisonData[i][1] = String.format("%.2f", history.getBestWPM());
+            comparisonData[i][2] = history.getTotalRaces();
+            comparisonData[i][3] = history.getWinsCount();
+            comparisonData[i][4] = String.format("%.1f", winRate) + "%";
+            comparisonData[i][5] = String.format("%.2f", history.getAverageAccuracy()) + "%";
+        }
+
+        JTable comparisonTable = new JTable(comparisonData, comparisonColumnNames);
+        comparisonTable.setEnabled(false);
+        comparisonTable.getTableHeader().setReorderingAllowed(false);
+        comparisonTable.setRowHeight(25);
+        comparisonTable.setFont(new Font("Arial", Font.PLAIN, 11));
+        comparisonTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+
+        JScrollPane comparisonScroll = new JScrollPane(comparisonTable);
+        tabbedPane.addTab("Comparison", comparisonScroll);
+
+        statsFrame.add(tabbedPane);
+        statsFrame.setVisible(true);
     }
 
 }

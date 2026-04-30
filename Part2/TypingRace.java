@@ -1,5 +1,6 @@
 import java.util.concurrent.TimeUnit;
 import java.lang.Math;
+import java.awt.Color;
 import javax.swing.*;
 
 /**
@@ -43,25 +44,6 @@ public class TypingRace {
         this.burnoutCounts = new java.util.HashMap<>();
         this.accuraciesBeforeRace = new java.util.HashMap<>();
     }
-
-    // /**
-    // * Seats a typist at the given seat number (1, 2, or 3).
-    // *
-    // * @param theTypist the typist to seat
-    // * @param seatNumber the seat to place them in (1–3)
-    // */
-    // public void addTypist(Typist theTypist, int seatNumber) {
-    // if (seatNumber == 1) {
-    // seat1Typist = theTypist;
-    // } else if (seatNumber == 2) {
-    // seat2Typist = theTypist;
-    // } else if (seatNumber == 3) {
-    // seat3Typist = theTypist;
-    // } else {
-    // System.out.println("Cannot seat typist at seat " + seatNumber + " — there is
-    // no such seat.");
-    // }
-    // }
 
     /**
      * Starts the typing race with live UI updates.
@@ -133,7 +115,10 @@ public class TypingRace {
             String formattedFinalAcc = String.format("%.2f", finalWinner.getAccuracy());
             String formattedOldAcc = String.format("%.2f", oldAcc);
 
-            System.out.println("And the winner is... " + finalWinner.getName());
+            // Record race results for all typists
+            recordRaceResults(new java.util.ArrayList<>(cfg.typists), finishOrder);
+
+            RaceFrame.showWinnerDialog(finalWinner, formattedFinalAcc, formattedOldAcc, cfg);
         }
     }
 
@@ -258,6 +243,46 @@ public class TypingRace {
             return true;
         } else {
             return false;
+        }
+    }
+
+    // Records the race results for all typists into the StatisticsManager
+    //
+    private void recordRaceResults(java.util.ArrayList<Typist> allTypists, java.util.ArrayList<Typist> finishOrder) {
+        // Calculate metrics for each typist
+        for (int position = 0; position < allTypists.size(); position++) {
+            Typist typist = allTypists.get(position);
+            String typistName = typist.getName();
+
+            // Calculate time taken in ms
+            long timeTaken = System.currentTimeMillis()
+                    - raceStartTimes.getOrDefault(typistName, System.currentTimeMillis());
+
+            // Calculate WPM and assuming average word length is 5 characters
+            double wordsTyped = (double) typist.getProgress() / 5.0;
+            double minutesTaken = (double) timeTaken / (1000.0 * 60.0);
+            double wpm = minutesTaken > 0 ? wordsTyped / minutesTaken : 0;
+
+            // Calculate accuracy percentage (progress without mistypes / total attempts)
+            // For now, use the typist's current accuracy * 100
+            double accuracyPercentage = typist.getAccuracy() * 100.0;
+
+            // Get burnout count
+            int burnoutCount = burnoutCounts.getOrDefault(typistName, 0);
+
+            // Determine position (1-indexed)
+            int finishPosition = finishOrder.contains(typist) ? finishOrder.indexOf(typist) + 1 : position + 1;
+
+            // Get accuracy before race
+            double accuracyBefore = accuraciesBeforeRace.getOrDefault(typistName, 0.0) * 100.0;
+            double accuracyAfter = typist.getAccuracy() * 100.0;
+
+            // Create and record race result
+            Color typistColor = typist.getColor();
+            RaceResult result = new RaceResult(typistName, wpm, accuracyPercentage, burnoutCount,
+                    finishPosition, timeTaken, accuracyBefore, accuracyAfter, typistColor);
+
+            StatisticsManager.recordRaceResult(typistName, result);
         }
     }
 
