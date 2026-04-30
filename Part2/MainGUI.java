@@ -68,7 +68,7 @@ public class MainGUI {
             RaceConfig cfg = getCurrentConfig();
 
             // Show the race frame FIRST
-            java.util.ArrayList<JTextPane> panes = RaceFrame.showRaceFrame(cfg);
+            ArrayList<JTextPane> panes = RaceFrame.showRaceFrame(cfg);
 
             // Run the race on a background thread for live updates
             new Thread(() -> {

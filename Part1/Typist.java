@@ -1,5 +1,10 @@
 /**
- * Write a description of class Typist here.
+ * Represents a typist in the textual typing race simulation.
+ *
+ * A Typist stores the competitor's name, symbol, accuracy, progress through the
+ * passage, and burnout state. This class supports typing forward, sliding back
+ * after mistypes, recovering from burnout over time, and resetting ready for a
+ * new race.
  *
  * Starter code generously abandoned by Ty Posaurus, your predecessor,
  * who typed with two fingers and considered that "good enough".

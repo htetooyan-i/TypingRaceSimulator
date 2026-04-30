@@ -1,4 +1,5 @@
 import java.util.concurrent.TimeUnit;
+import java.util.*;
 import java.lang.Math;
 import java.awt.Color;
 import javax.swing.*;
@@ -27,9 +28,9 @@ public class TypingRace {
     private static final double WIN_ACCURACY_BONUS = 0.02;
 
     // Track race timing and burnout counts for each typist
-    private java.util.HashMap<String, Long> raceStartTimes;
-    private java.util.HashMap<String, Integer> burnoutCounts;
-    private java.util.HashMap<String, Double> accuraciesBeforeRace;
+    private HashMap<String, Long> raceStartTimes;
+    private HashMap<String, Integer> burnoutCounts;
+    private HashMap<String, Double> accuraciesBeforeRace;
 
     /**
      * Constructor for objects of class TypingRace.
@@ -40,9 +41,9 @@ public class TypingRace {
      */
     public TypingRace(int passageLength) {
         this.passageLength = passageLength;
-        this.raceStartTimes = new java.util.HashMap<>();
-        this.burnoutCounts = new java.util.HashMap<>();
-        this.accuraciesBeforeRace = new java.util.HashMap<>();
+        this.raceStartTimes = new HashMap<>();
+        this.burnoutCounts = new HashMap<>();
+        this.accuraciesBeforeRace = new HashMap<>();
     }
 
     /**
@@ -52,7 +53,7 @@ public class TypingRace {
      * @param cfg   the race configuration with typists and passage
      * @param panes list of JTextPane objects to update (one per typist)
      */
-    public void startRaceWithUpdates(RaceConfig cfg, java.util.ArrayList<JTextPane> panes) {
+    public void startRaceWithUpdates(RaceConfig cfg, ArrayList<JTextPane> panes) {
         boolean finished = false;
 
         try {
@@ -70,7 +71,7 @@ public class TypingRace {
 
                 // Apply purchased upgrades
                 try {
-                    java.util.Set<String> ups = LeaderboardManager.getUpgrades(t.getName());
+                    Set<String> ups = LeaderboardManager.getUpgrades(t.getName());
                     if (ups.contains("Wrist Support")) {
                         if (!t.hasAccessory("Wrist Support"))
                             t.addAccessory("Wrist Support");
@@ -125,7 +126,7 @@ public class TypingRace {
         }
 
         // Determine finishing order and record results
-        java.util.ArrayList<Typist> finishOrder = new java.util.ArrayList<>();
+        ArrayList<Typist> finishOrder = new ArrayList<>();
         for (Typist t : cfg.typists) {
             if (raceFinishedBy(t)) {
                 finishOrder.add(t);
@@ -142,7 +143,7 @@ public class TypingRace {
             String formattedOldAcc = String.format("%.2f", oldAcc);
 
             // Record race results for all typists
-            recordRaceResults(new java.util.ArrayList<>(cfg.typists), finishOrder);
+            recordRaceResults(new ArrayList<>(cfg.typists), finishOrder);
 
             RaceFrame.showWinnerDialog(finalWinner, formattedFinalAcc, formattedOldAcc, cfg);
         }
@@ -274,7 +275,7 @@ public class TypingRace {
 
     // Records the race results for all typists into the StatisticsManager
     //
-    private void recordRaceResults(java.util.ArrayList<Typist> allTypists, java.util.ArrayList<Typist> finishOrder) {
+    private void recordRaceResults(ArrayList<Typist> allTypists, ArrayList<Typist> finishOrder) {
         // Calculate metrics for each typist
         for (int position = 0; position < allTypists.size(); position++) {
             Typist typist = allTypists.get(position);

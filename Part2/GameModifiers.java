@@ -1,5 +1,5 @@
 public class GameModifiers {
-
+        
         // Typing Styles
         public static final StatModifier TOUCH_TYPIST = new StatModifier(1.0, 1.1, 1.0);
 

@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.List;
 
 public class LeaderboardPanel extends JPanel {
 
@@ -105,7 +106,7 @@ public class LeaderboardPanel extends JPanel {
             return;
         SwingUtilities.invokeLater(() -> {
             model.setRowCount(0);
-            java.util.List<LeaderboardEntry> list = LeaderboardManager.getSortedEntries();
+            List<LeaderboardEntry> list = LeaderboardManager.getSortedEntries();
             int rank = 1;
             for (LeaderboardEntry e : list) {
                 String titles = String.join(", ", e.titles);
