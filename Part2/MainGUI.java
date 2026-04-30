@@ -16,8 +16,9 @@ public class MainGUI {
     private static final String MEDIUM_PASSAGE = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
     private static final String LONG_PASSAGE = "In a village of La Mancha, the name of which I have no desire to call to mind, there lived not long since one of those gentlemen that keep a lance in the lancerack, an old buckler, a lean hack, and a greyhound for coursing. An olla of rather more beef than mutton, a salad on most nights, scraps on Saturdays, lentils on Fridays, and a pigeon or so extra on Sundays, made away with three-quarters of his income.";
 
-    public static void main(String[] args) {
-
+    // Starts the graphical user interface by creating the main frame with race configuration and leaderboard tabs.
+    // 
+    public static void startRaceGUI() {
         JFrame frame = new JFrame("Typing Race Game");
         frame.setLayout(new BorderLayout());
 
@@ -35,6 +36,12 @@ public class MainGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1200, 1000);
         frame.setVisible(true);
+    }
+
+     // Main entry point for the graphical typing race simulator.
+     // 
+    public static void main(String[] args) {
+        startRaceGUI();
     }
 
     public static JPanel raceConfiguration() {
@@ -82,7 +89,8 @@ public class MainGUI {
         return panel;
     }
 
-    // Player configuration panel where users can enter typist details and select modifiers
+    // Player configuration panel where users can enter typist details and select
+    // modifiers
     //
     public static JPanel playerConfiguration() {
         JPanel panel = new JPanel();
@@ -206,7 +214,8 @@ public class MainGUI {
         return panel;
     }
 
-    // Panel for entering typist details - name, symbol, color, typing style and keyboard type
+    // Panel for entering typist details - name, symbol, color, typing style and
+    // keyboard type
     //
     public static JPanel typistEntry(int typistNumber) {
         JPanel panel = new JPanel();
@@ -356,7 +365,8 @@ public class MainGUI {
         return panel;
     }
 
-    // ensure name and symbol are filled for each typist, and passage is not empty if custom
+    // ensure name and symbol are filled for each typist, and passage is not empty
+    // if custom
     //
     public static String validateConfig() {
         int numberOfTypists = typistSpinner == null ? 0 : (int) typistSpinner.getValue();
@@ -442,7 +452,8 @@ public class MainGUI {
         return cfg;
     }
 
-    // show info table about typing styles, keyboard types, and accessories modifiers
+    // show info table about typing styles, keyboard types, and accessories
+    // modifiers
     //
     public static JPanel showModifierInfo() {
 
